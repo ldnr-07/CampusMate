@@ -1,9 +1,5 @@
 {
   "version": 2,
-  "public": true,
-  "github": {
-    "enabled": false
-  },
   "builds": [
     {
       "src": "src/**/*",
@@ -13,15 +9,7 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/src/landing page.html"
-    },
-    {
-      "src": "/app",
-      "dest": "/src/logSign.html"
-    },
-    {
-      "src": "/auth",
-      "dest": "/src/logSign.html"
+      "dest": "/src/landing-page.html"
     },
     {
       "src": "/(.*)",
