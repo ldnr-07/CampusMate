@@ -10,8 +10,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="CampusMate" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="src/config/supabaseClient.js"></script>
   <style>
     body {
       margin: 0;
@@ -48,31 +46,8 @@
   </div>
 
   <script>
-    // Check auth status and redirect accordingly
-    async function checkAuthAndRedirect() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
-          // User is logged in - load the app
-          window.location.href = 'src/logSign.html';
-        } else {
-          // User is not logged in - redirect to landing page
-          window.location.href = 'src/landing page.html';
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        // Fallback to landing page if auth check fails
-        window.location.href = 'src/landing page.html';
-      }
-    }
-
-    // Check auth status when page loads
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', checkAuthAndRedirect);
-    } else {
-      checkAuthAndRedirect();
-    }
+    // Redirect all users to landing page
+    window.location.href = 'src/landing page.html';
   </script>
 </body>
 </html>
