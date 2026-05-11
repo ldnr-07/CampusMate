@@ -1,0 +1,74 @@
+/* ===== EXAMS ===== */
+#exams-container { flex: 1; overflow-y: auto; }
+
+.exam-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid var(--blue);
+}
+
+.exam-card:hover { background: var(--blue-tint); transform: translateX(4px); }
+.exam-card.selected { background: var(--blue-tint); border-left-color: var(--blue-mid); }
+
+.exam-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--blue);
+  background: transparent;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: transparent;
+  transition: background 0.2s, color 0.2s;
+}
+
+.exam-card.selected .exam-indicator {
+  background: var(--blue);
+  color: white;
+}
+
+.exam-main { flex: 1; min-width: 0; }
+
+.exam-title {
+  font-family: var(--brand-font);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exam-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.exam-subject-tag {
+  background: var(--blue-50);
+  color: var(--blue-mid);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.exam-score { font-weight: 700; color: var(--blue); font-size: 0.85rem; }
+
+.btn-enter-results { background: var(--blue); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--brand-font); font-size: 0.85rem; transition: background 0.2s; }
+.btn-see-results { background: var(--blue); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--brand-font); font-size: 0.85rem; transition: background 0.2s; }
+.btn-enter-results:hover, .btn-see-results:hover { background: var(--blue-hover); }

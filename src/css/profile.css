@@ -1,0 +1,42 @@
+/* ===== PROFILE ===== */
+#page-profile.app-page { display: none; }
+#page-profile.app-page.active { display: flex; flex-direction: column; align-items: center; padding: 28px; }
+.profile-back { margin-bottom: 20px; }
+.back-btn-white { background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px; transition: background 0.2s; }
+.back-btn-white:hover { background: var(--gray-surface); }
+
+.profile-card { background: white; border-radius: var(--radius); padding: 40px; box-shadow: var(--shadow-sm); width: 100%; max-width: 900px; }
+.profile-name-section { margin-bottom: 32px; }
+.profile-name-section h1 { font-family: var(--brand-font); font-size: 2.4rem; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+.profile-username { color: var(--text-muted); font-weight: 600; margin-top: 6px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; }
+.edit-btn { background: var(--blue); color: white; border: none; width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
+.edit-btn:hover { background: var(--blue-hover); }
+
+.profile-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+.info-section h3 { font-family: var(--brand-font); font-size: 1rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.info-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--gray-pale); font-size: 0.9rem; }
+.info-row:last-child { border-bottom: none; }
+.info-label { font-weight: 700; color: var(--text-secondary); min-width: 120px; }
+
+.btn-delete { background: var(--danger); color: white; border: none; padding: 13px 32px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: var(--brand-font); display: flex; align-items: center; gap: 8px; margin: 0 auto; transition: background 0.2s; }
+.btn-delete:hover { background: var(--danger); filter: brightness(0.9); }
+
+/* ===== PROFILE AVATAR ===== */
+.profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: var(--blue-tint); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--blue); border: 3px solid var(--blue-tint); }
+
+/* ===== DOB PICKER ===== */
+.dob-day-header { text-align: center; font-size: 12px; font-weight: 600; color: #aaa; padding: 6px 0 8px; }
+.dob-day {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; margin: auto;
+  font-size: 13px; user-select: none;
+  color: #333; background: transparent; border: none;
+  transition: background 0.15s, color 0.15s;
+}
+.dob-day:hover { background: #f1f5f9; }
+.dob-day.other-month { color: #ccc; }
+.dob-day.is-today { border: 1.5px solid #333; font-weight: 700; }
+.dob-day.is-selected { background: #1a73e8; color: #fff; border: none; }
+.dob-day.is-selected:hover { background: #1a73e8; }

@@ -1,0 +1,71 @@
+@import url('./variables.css');
+@import url('./auth.css');
+@import url('./layout.css');
+@import url('./dashboard.css');
+@import url('./classes.css');
+@import url('./calendar.css');
+@import url('./shared.css');
+@import url('./tasks.css');
+@import url('./exams.css');
+@import url('./quiz.css');
+@import url('./profile.css');
+@import url('./responsive.css');
+
+/* ===== ACCESSIBILITY ===== */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--blue);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: 700;
+  z-index: 10000;
+  border-radius: 0 0 8px 0;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Enhanced focus indicators */
+*:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-muted: #000000;
+    --gray-pale: #666666;
+    --border: #000000;
+  }
+  .modal, .toast, .app-page, .auth-card, .task-card, .exam-card, .cls-card {
+    border: 2px solid black;
+  }
+}
+
+/* ===== UI POLISH — drop-in layer ===== */
+@import url('./polish.css');

@@ -1,0 +1,48 @@
+/* ===== PAGE CARD ===== */
+.page-card { background: white; border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow-sm); }
+.page-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-title { display: flex; align-items: center; gap: 12px; }
+.title-icon { font-size: 1.6rem; background: var(--blue); color: white; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.page-title h2 { font-family: var(--brand-font); font-size: 1.6rem; font-weight: 900; }
+.header-actions { display: flex; gap: 10px; }
+.btn-add { background: var(--blue); color: white; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.88rem; display: flex; align-items: center; gap: 6px; font-family: var(--brand-font); transition: background 0.2s; }
+.btn-add:hover { background: var(--blue-hover); }
+.btn-remove { background: var(--text-primary); color: white; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.88rem; display: flex; align-items: center; gap: 6px; font-family: var(--brand-font); transition: background 0.2s; }
+.btn-remove:hover { background: var(--text-secondary); }
+
+.tab-bar { display: flex; gap: 0; margin-bottom: 20px; border: 2px solid var(--blue); border-radius: 10px; overflow: hidden; }
+.tab { flex: 1; padding: 10px; background: white; border: none; cursor: pointer; font-weight: 700; font-family: var(--brand-font); font-size: 0.95rem; color: var(--text-primary); transition: all 0.2s; }
+.tab.active { background: var(--blue); color: white; }
+.tab:hover:not(.active) { background: var(--blue-tint); }
+
+/* ===== MODALS ===== */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.active { display: flex; }
+.modal { background: white; border-radius: 16px; padding: 32px; min-width: 360px; max-width: 640px; width: 92%; max-height: 90vh; overflow: auto; position: relative; animation: slideUp 0.3s ease; }
+.modal-close { position: absolute; top: 14px; right: 14px; background: var(--blue-tint); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+.modal h3 { font-family: var(--brand-font); font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; }
+.modal .form-group { margin-bottom: 14px; }
+.modal .btn-primary { margin-top: 8px; }
+.modal select {
+  width: 100%; padding: 11px 16px; border: 2px solid var(--gray-pale); border-radius: 10px;
+  font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg-input); transition: border 0.2s;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; cursor: pointer;
+}
+.modal select:focus { outline: none; border-color: var(--blue); background-color: white; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--text-primary); color: white; padding: 12px 24px; border-radius: 10px;
+  font-weight: 600; font-size: 0.9rem; z-index: 2000;
+  transition: transform 0.3s; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.95rem; }

@@ -1,0 +1,42 @@
+/* ===== DASHBOARD ===== */
+#page-dashboard { padding: 28px; }
+.dashboard-hero {
+  background: var(--blue); border-radius: var(--radius);
+  padding: 32px; margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+}
+.dashboard-hero h1 { font-family: var(--brand-font); font-size: 2.4rem; font-weight: 900; color: white; margin-bottom: 20px; }
+
+.activity-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.act-card {
+  background: white; border-radius: 12px; padding: 18px 20px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative; overflow: hidden;
+}
+.act-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.act-icon { font-size: 1.4rem; }
+.act-card strong { font-family: var(--brand-font); font-size: 0.95rem; color: var(--text-primary); }
+.act-count { font-family: var(--brand-font); font-size: 1.8rem; font-weight: 900; margin-top: auto; }
+.act-card.pending .act-count { color: var(--blue); }
+.act-card.overdue .act-count { color: var(--danger); }
+.act-card.completed .act-count { color: var(--success); }
+
+.classes-section { background: white; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); }
+.classes-header { margin-bottom: 16px; }
+.classes-badge { background: var(--blue); color: white; border: none; padding: 8px 20px; border-radius: 8px; font-family: var(--brand-font); font-weight: 800; font-size: 1rem; cursor: default; }
+
+.classes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+.class-card {
+  background: var(--blue); color: white; border-radius: 12px;
+  padding: 18px 16px; cursor: pointer; display: flex;
+  align-items: center; justify-content: space-between;
+  font-family: var(--brand-font); font-weight: 700;
+  font-size: 0.95rem; transition: background 0.2s;
+  flex-direction: column; align-items: flex-start; gap: 8px;
+}
+.class-card:hover { background: var(--blue-hover); }
+.card-arrow { align-self: flex-end; font-size: 1.2rem; transition: transform 0.3s; }
+.class-card.open .card-arrow { transform: rotate(180deg); }
+.class-detail { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 400; opacity: 0.9; width: 100%; }
+.class-detail p { margin: 2px 0; }

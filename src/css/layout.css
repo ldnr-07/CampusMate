@@ -1,0 +1,96 @@
+/* ===== APP SHELL ===== */
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: var(--sidebar-w); background: var(--blue);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0;
+  z-index: 100; transition: transform 0.3s;
+  box-shadow: 4px 0 20px rgba(32,112,200,0.15);
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 8px;
+  padding: 20px 18px 16px; cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.sidebar-brand .logo-icon { font-size: 1.4rem; }
+.sidebar-brand .brand-name { color: white; font-family: var(--brand-font); font-weight: 900; font-size: 1.1rem; }
+
+.sidebar-nav { display: flex; flex-direction: column; flex: 1; padding: 12px 0; overflow-y: auto; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px; color: rgba(255,255,255,0.8);
+  cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+  font-weight: 600; position: relative; border-left: 3px solid transparent;
+  user-select: none;
+}
+.nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.15); border-left-color: white; }
+.nav-icon { font-size: 1rem; flex-shrink: 0; }
+.nav-arrow { margin-left: auto; transition: transform 0.3s; font-size: 1.2rem; }
+.nav-arrow.open { transform: rotate(90deg); }
+
+.expandable { justify-content: flex-start; }
+.nav-sub { display: none; }
+.nav-sub.open { display: flex; flex-direction: column; }
+.nav-sub-item {
+  padding: 9px 18px 9px 42px; color: rgba(255,255,255,0.7);
+  cursor: pointer; font-size: 0.88rem; font-weight: 600;
+  transition: all 0.2s; border-left: 3px solid transparent;
+}
+.nav-sub-item:hover, .nav-sub-item.active { color: white; background: rgba(255,255,255,0.1); border-left-color: rgba(255,255,255,0.5); }
+
+.sidebar-spacer { flex: 1; }
+.add-new-btn {
+  margin: 8px 14px; border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 10px; justify-content: center;
+  color: white !important; background: transparent;
+  transition: background 0.2s !important;
+}
+.add-new-btn:hover { background: rgba(255,255,255,0.2) !important; }
+
+.logout-btn {
+  margin: 12px 14px 18px; padding: 11px 16px;
+  background: white; color: var(--text-primary); border: none;
+  border-radius: 10px; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; font-family: var(--brand-font);
+  transition: background 0.2s;
+}
+.logout-btn:hover { background: var(--gray-surface); }
+
+/* ===== MAIN AREA ===== */
+.main-area { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  height: var(--topbar-h); background: white;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid var(--gray-pale);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-left .hamburger { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+.topbar-datetime { font-family: var(--brand-font); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+.topbar-datetime .time { font-weight: 800; color: var(--text-primary); font-size: 1.5rem; }
+.topbar-datetime .date { color: var(--text-secondary); font-size: 1rem; }
+.topbar-datetime.hidden { display: none !important; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--blue); border: none; cursor: pointer;
+  font-size: 1rem; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+}
+.icon-btn:hover { background: var(--blue-hover); transform: scale(1.05); }
+
+/* ===== MAIN CONTENT ===== */
+.main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ===== APP PAGES ===== */
+.app-page { display: none; padding: 0; animation: fadeIn 0.3s ease; }
+.app-page.active { display: flex; flex-direction: column; flex: 1; overflow: auto; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99; }
+.sidebar-overlay.active { display: block; }

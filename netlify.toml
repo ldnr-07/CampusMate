@@ -1,0 +1,11 @@
+# DEPRECATED: This project now uses Vercel for deployment
+# See vercel.json for Vercel configuration
+# To deploy: npx vercel --yes
+
+[build]
+  publish = "src"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
