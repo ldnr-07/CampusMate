@@ -842,7 +842,7 @@
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
       }
     } catch (error) {
       console.warn('Auth check failed:', error);
@@ -895,7 +895,7 @@
       const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
       if (error) { alert(error.message); return; }
       alert('Welcome back!');
-      window.location.href = 'index.html';
+      window.location.href = '../index.html';
     } catch (error) {
       alert('Login failed: ' + error.message);
     }
@@ -960,7 +960,7 @@
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/index.html'
+          redirectTo: window.location.origin + '/logSign.html'
         }
       });
       if (error) alert(error.message);
