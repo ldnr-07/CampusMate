@@ -378,24 +378,6 @@
     .features, .how, .cta-section { padding: 60px 24px; }
   }
 
-/* Auth Modal Styles */
-.auth-modal {
-  position: fixed; inset: 0; z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-}
-.auth-modal-overlay {
-  position: absolute; inset: 0;
-}
-.auth-modal-content {
-  position: relative; z-index: 1;
-  background: white; border-radius: 20px; overflow: hidden;
-  width: min(900px, 95vw); max-height: 90vh; overflow-y: auto;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
-  animation: modalSlideUp 0.3s ease;
-}
-@keyframes modalSlideUp { from { opacity:0; transform:translateY(30px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
-
 /* Terms Modal Styles */
 .tc-modal-overlay {
   position: fixed; inset: 0; z-index: 2000;
@@ -446,8 +428,8 @@
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-cta">
-    <a class="btn-ghost" onclick="openAuthModal('login')">Log In</a>
-    <a class="btn-solid" onclick="openAuthModal('signup')">Get Started Free →</a>
+    <a class="btn-ghost" href="logSign.html">Log In</a>
+    <a class="btn-solid" href="logSign.html">Get Started Free →</a>
   </div>
 </nav>
 
@@ -468,7 +450,7 @@
       and generate AI-powered quizzes — all in one beautiful, distraction-free space.
     </p>
     <div class="hero-actions">
-      <a class="btn-hero btn-hero-primary" onclick="openAuthModal('signup')">🚀 Start for Free</a>
+      <a class="btn-hero btn-hero-primary" href="logSign.html">🚀 Start for Free</a>
       <a class="btn-hero btn-hero-secondary" href="#features">▶ Watch Demo</a>
     </div>
   </div>
@@ -653,7 +635,7 @@
   <h2 class="cta-title">Ready to take control<br>of your academics?</h2>
   <p class="cta-sub">Join thousands of students who are already studying smarter with CampusMate. It's free to start.</p>
   <div class="cta-actions">
-    <a class="btn-hero btn-hero-primary" onclick="openAuthModal('signup')">🚀 Create Free Account</a>
+    <a class="btn-hero btn-hero-primary" href="logSign.html">🚀 Create Free Account</a>
     <a class="btn-hero btn-hero-secondary" href="#features">Learn More →</a>
   </div>
 </section>
@@ -701,111 +683,6 @@
   </div>
 </footer>
 
-<!-- AUTH MODALS -->
-<div id="auth-modal" class="auth-modal" style="display: none;">
-  <div class="auth-modal-overlay" onclick="closeAuthModal()"></div>
-  <div class="auth-modal-content">
-    <div id="modal-login" class="auth-page active">
-      <div class="auth-left">
-        <div class="brand-logo">
-          <span class="logo-icon"></span>
-          <span class="brand-name">CampusMate</span>
-        </div>
-        <h2>Welcome back!</h2>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="modal-login-email" placeholder="Enter your email" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="modal-login-password" placeholder="Enter your password" />
-            <button type="button" class="password-toggle" onclick="togglePassword('modal-login-password', this)">Show</button>
-          </div>
-          <a class="forgot-link" onclick="showModalPage('modal-forgot')">Forgot Password?</a>
-        </div>
-        <button class="btn-primary" onclick="doModalLogin()">Login</button>
-        <div class="divider"><span>or sign in with</span></div>
-        <button class="btn-google" onclick="signInWithGoogle()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" />Google</button>
-        <p class="auth-switch">Don't have an account? <a onclick="showModalPage('modal-signup')">Sign up</a></p>
-      </div>
-      <div class="auth-right">
-        <img src="/image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain;">
-      </div>
-    </div>
-
-    <div id="modal-signup" class="auth-page">
-      <div class="auth-left">
-        <div class="brand-logo">
-          <span class="logo-icon"></span>
-          <span class="brand-name">CampusMate</span>
-        </div>
-        <h2>Sign Up</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" id="modal-signup-firstname" placeholder="First name" />
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" id="modal-signup-lastname" placeholder="Last name" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="modal-signup-email" placeholder="Enter your email" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="modal-signup-password" placeholder="Create a password" />
-            <button type="button" class="password-toggle" onclick="togglePassword('modal-signup-password', this)">Show</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="modal-signup-confirm" placeholder="Confirm your password" />
-            <button type="button" class="password-toggle" onclick="togglePassword('modal-signup-confirm', this)">Show</button>
-          </div>
-        </div>
-        <div class="tc-checkbox-group">
-          <label class="tc-checkbox-label">
-            <input type="checkbox" id="modal-tc-checkbox" onchange="onModalTermsChecked()" />
-            <span class="tc-checkmark"></span>
-            <span class="tc-text">I have read and agree to the <a class="tc-link" onclick="openTermsModal()">Terms & Conditions</a></span>
-          </label>
-        </div>
-        <button class="btn-primary" id="modal-signup-btn" onclick="validateModalSignup()" disabled>Sign Up</button>
-        <p class="auth-switch">Already have an account? <a onclick="showModalPage('modal-login')">Log in</a></p>
-      </div>
-      <div class="auth-right">
-        <img src="/image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain;">
-      </div>
-    </div>
-
-    <div id="modal-forgot" class="auth-page">
-      <div class="auth-left">
-        <div class="brand-logo">
-          <span class="logo-icon"></span>
-          <span class="brand-name">CampusMate</span>
-        </div>
-        <h2>Reset Password</h2>
-        <p>Enter your email address and we'll send you a link to reset your password.</p>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="modal-forgot-email" placeholder="Enter your email" />
-        </div>
-        <button class="btn-primary" onclick="doModalForgotPassword()">Send Reset Link</button>
-        <p class="auth-switch"><a onclick="showModalPage('modal-login')">← Back to Login</a></p>
-      </div>
-      <div class="auth-right">
-        <img src="/image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain;">
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- TERMS MODAL -->
 <div id="tc-modal-overlay" class="tc-modal-overlay">
   <div class="tc-modal">
@@ -848,142 +725,6 @@
       console.warn('Auth check failed:', error);
     }
   });
-
-  // Auth Modal Functions
-  function openAuthModal(type) {
-    document.getElementById('auth-modal').style.display = 'flex';
-    if (type === 'login') {
-      showModalPage('modal-login');
-    } else {
-      showModalPage('modal-signup');
-    }
-  }
-
-  function closeAuthModal() {
-    document.getElementById('auth-modal').style.display = 'none';
-  }
-
-  function showModalPage(pageId) {
-    document.querySelectorAll('#auth-modal .auth-page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById(pageId);
-    if (target) target.classList.add('active');
-  }
-
-  function togglePassword(inputId, button) {
-    const input = document.getElementById(inputId);
-    if (input.type === 'password') {
-      input.type = 'text';
-      button.textContent = 'Hide';
-    } else {
-      input.type = 'password';
-      button.textContent = 'Show';
-    }
-  }
-
-  function onModalTermsChecked() {
-    const checkbox = document.getElementById('modal-tc-checkbox');
-    const btn = document.getElementById('modal-signup-btn');
-    btn.disabled = !checkbox.checked;
-  }
-
-  async function doModalLogin() {
-    const email = document.getElementById('modal-login-email').value.trim();
-    const pass = document.getElementById('modal-login-password').value;
-    if (!email || !pass) { alert('Please fill in all fields'); return; }
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-      if (error) { alert(error.message); return; }
-      alert('Welcome back!');
-      window.location.href = '../index.html';
-    } catch (error) {
-      alert('Login failed: ' + error.message);
-    }
-  }
-
-  async function validateModalSignup() {
-    const firstname = document.getElementById('modal-signup-firstname').value.trim();
-    const lastname = document.getElementById('modal-signup-lastname').value.trim();
-    const email = document.getElementById('modal-signup-email').value.trim();
-    const password = document.getElementById('modal-signup-password').value;
-    const confirm = document.getElementById('modal-signup-confirm').value;
-
-    if (!firstname || !lastname || !email || !password || !confirm) {
-      alert('Please fill in all required fields');
-      return;
-    }
-    if (password !== confirm) { alert('Passwords do not match'); return; }
-    if (password.length < 6) { alert('Password must be at least 6 characters'); return; }
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { first_name: firstname, last_name: lastname } }
-      });
-
-      if (error) { alert(error.message); return; }
-
-      if (data?.user) {
-        await supabase.from('profiles').upsert({
-          id: data.user.id,
-          first_name: firstname,
-          last_name: lastname,
-          username: '@' + email.split('@')[0],
-          email: email,
-        }, { onConflict: 'id' });
-      }
-
-      alert('Account created! Please check your email to confirm.');
-      showModalPage('modal-login');
-    } catch (error) {
-      alert('Signup failed: ' + error.message);
-    }
-  }
-
-  async function doModalForgotPassword() {
-    const email = document.getElementById('modal-forgot-email').value.trim();
-    if (!email) { alert('Please enter your email'); return; }
-
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      if (error) { alert(error.message); return; }
-      alert('Password reset link sent to your email');
-      showModalPage('modal-login');
-    } catch (error) {
-      alert('Failed to send reset link: ' + error.message);
-    }
-  }
-
-  async function signInWithGoogle() {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/logSign.html'
-        }
-      });
-      if (error) alert(error.message);
-    } catch (error) {
-      alert('Google sign in failed: ' + error.message);
-    }
-  }
-
-  function openTermsModal() {
-    document.getElementById('tc-modal-overlay')?.classList.add('active');
-  }
-
-  function closeTermsModal() {
-    document.getElementById('tc-modal-overlay')?.classList.remove('active');
-  }
-
-  function acceptTermsAndClose() {
-    const checkbox = document.getElementById('modal-tc-checkbox');
-    const signupBtn = document.getElementById('modal-signup-btn');
-    if (checkbox) checkbox.checked = true;
-    if (signupBtn) signupBtn.disabled = false;
-    closeTermsModal();
-  }
 
   // Nav shadow on scroll
   const navbar = document.getElementById('navbar');

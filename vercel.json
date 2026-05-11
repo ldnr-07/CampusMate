@@ -12,8 +12,20 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/src/landing page.html"
+    },
+    {
+      "src": "/app",
+      "dest": "/src/logSign.html"
+    },
+    {
+      "src": "/auth",
+      "dest": "/src/logSign.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/src/index.html"
+      "dest": "/src/$1"
     }
   ]
 }

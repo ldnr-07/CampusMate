@@ -10,8 +10,23 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="CampusMate" />
-  <link rel="apple-touch-icon" href="../image/Logo.png" />
-  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="apple-touch-icon" href="/image/Logo.png" />
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/quiz.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/calendar.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/exams.css"/>
+  <link rel="stylesheet" href="css/tasks.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/profile.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <link rel="stylesheet" href="css/terms.css"/>
+  <link rel="stylesheet" href="css/variables.css"/>
+  <link rel="stylesheet" href="css/classes.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
+  <link rel="stylesheet" href="css/polish.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -51,7 +66,7 @@
       <p class="auth-switch">Don't have an account? <a onclick="showPage('page-signup')">Sign up</a></p>
     </div>
     <div class="auth-right">
-      <img src="../image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain;">
+      <a href="landing page.html"><img src="image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain; margin-left: 35  px;"></a>
     </div>
   </div>
 </div>
@@ -243,7 +258,7 @@
         <a class="nav-sub-item" data-page="page-quiz" onclick="showAppPage('page-quiz')">Quiz</a>
       </div>
       <div class="sidebar-spacer"></div>
-      <a class="nav-item add-new-btn" onclick="handleAddNew()">
+      <a class="logout-btn add-new-btn" onclick="handleAddNew()">
         <span id="nav-icon-plus"></span> Add New
       </a>
     </nav>
@@ -543,9 +558,6 @@
       </div>
     </div>
     <div id="page-profile" class="app-page" role="region" aria-label="Profile">
-      <div class="profile-back">
-        <button class="back-btn-white" onclick="showAppPage('page-dashboard')">← Return to Dashboard</button>
-      </div>
       <div class="profile-card">
         <div class="profile-name-section">
           <div id="profile-avatar" class="profile-avatar-wrap"></div>
@@ -583,24 +595,24 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="/js/icons.js"></script>
-<script src="/config/supabaseClient.js"></script>
-<script src="/js/config.js"></script>
-<script src="/js/utils.js"></script>
-<script src="/js/ui.js"></script>
-<script src="/js/navigation.js"></script>
-<script src="/js/auth.js"></script>
-<script src="/js/dashboard.js"></script>
-<script src="/js/calendar.js"></script>
-<script src="/js/tasks.js"></script>
-<script src="/js/exams.js"></script>
-<script src="/js/classes.js"></script>
-<script src="/js/quiz.js"></script>
-<script src="/js/profile.js"></script>
+<script src="js/icons.js"></script>
+<script src="config/supabaseClient.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/exams.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/profile.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
+      navigator.serviceWorker.register('service-worker.js')
         .catch(err => console.warn('SW registration failed:', err));
     });
   }
