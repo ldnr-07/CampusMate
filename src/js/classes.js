@@ -32,8 +32,10 @@ async function loadClassesFromSupabase() {
     endTime: parseTimeParts(c.time)[1],
     mode: 'In Person',
     occurs: 'Repeating',
-    startDate: '',
-    endDate: '',
+    startDate: c.start_date || '',
+    endDate: c.end_date || '',
+    dateOption: c.date_option || 'None',
+    term: c.term || '',
   }));
   renderClasses();
   renderClassSchedule();
@@ -533,6 +535,10 @@ async function saveSubject() {
     section: section || null,
     room: room || null,
     instructor: teacher || null,
+    start_date: startDate || null,
+    end_date: endDate || null,
+    date_option: dateOption || 'None',
+    term: dateOption === 'Academic year term' ? term : null,
   };
 
   let error;
@@ -665,8 +671,8 @@ function openTimePicker(targetInputId, labelText) {
       <canvas id="tp-canvas" width="200" height="200" style="cursor:pointer;border-radius:50%;"></canvas>
     </div>
     <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
-      <button onclick="tpCancel()" style="background:none;border:none;color:#888;cursor:pointer;font-size:0.95rem;">Cancel</button>
-      <button onclick="tpConfirm()"
+      <button onclick="tpCancel(event)" style="background:none;border:none;color:#888;cursor:pointer;font-size:0.95rem;">Cancel</button>
+      <button onclick="tpConfirm(event)"
         style="background:var(--blue);color:white;border:none;padding:8px 20px;
         border-radius:8px;font-weight:600;cursor:pointer;">OK</button>
     </div>
@@ -773,7 +779,8 @@ function tpDraw(hour, minute, mode) {
   });
 }
 
-function tpConfirm() {
+function tpConfirm(e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
   const { hour, minute, isAM } = window._tp;
   let h24 = hour;
   if (!isAM && hour !== 12) h24 = hour + 12;
@@ -806,7 +813,8 @@ function tpConfirm() {
   }
 }
 
-function tpCancel() {
+function tpCancel(e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
   const s = window._tpFormState || {};
   const targetInputId = s.targetInputId || '';
   const isClassPicker = targetInputId === 'new-class-start-time' || targetInputId === 'new-class-end-time';
@@ -942,6 +950,11 @@ function openDatePicker(targetInputId, labelText, callerForm) {
   } else if (callerForm === 'settings') {
     window._dpFormState = {
       targetInputId, callerForm,
+      school:        document.getElementById('acad-school')?.value || '',
+      course:        document.getElementById('acad-course')?.value || '',
+      year_level:    document.getElementById('acad-year')?.value || '',
+      semester:      document.getElementById('acad-semester')?.value || '',
+      academic_year: document.getElementById('acad-year-input')?.value || '',
       sem1_start: document.getElementById('sem1-start-dp')?.value || '',
       sem1_end:   document.getElementById('sem1-end-dp')?.value   || '',
       sem2_start: document.getElementById('sem2-start-dp')?.value || '',
@@ -1082,6 +1095,12 @@ function openDatePicker(targetInputId, labelText, callerForm) {
     dpRestoreForm();
   };
 
+  window.dpCancel = function() {
+    // Don't save any value — just restore the parent form (e.g. settings modal)
+    document.getElementById('modal-overlay').classList.remove('active');
+    dpRestoreForm();
+  };
+
   const content = `
     <div style="min-width:280px;padding-right:36px;">
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:14px;">
@@ -1092,7 +1111,7 @@ function openDatePicker(targetInputId, labelText, callerForm) {
       </div>
       <div id="dp-grid-inner" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;"></div>
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:10px;border-top:1px solid #f0f4f8;">
-        <button onclick="closeModal()" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:6px;">Cancel</button>
+        <button onclick="dpCancel()" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:6px;">Cancel</button>
         <button onclick="dpConfirm()" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:6px;">OK</button>
       </div>
     </div>
@@ -1155,11 +1174,11 @@ function dpRestoreForm() {
   } else if (s.callerForm === 'settings') {
     // Build prefill with the confirmed value merged in so showSettings renders it immediately
     const prefill = {
-      school:        document.getElementById('acad-school')?.value || '',
-      course:        document.getElementById('acad-course')?.value || '',
-      year_level:    document.getElementById('acad-year')?.value || '',
-      semester:      document.getElementById('acad-semester')?.value || '',
-      academic_year: document.getElementById('acad-year-input')?.value || '',
+      school:        s.school        || '',
+      course:        s.course        || '',
+      year_level:    s.year_level    || '',
+      semester:      s.semester      || '',
+      academic_year: s.academic_year || '',
       sem1_start:    s._confirmedKey === 'sem1-start-dp'    ? s._confirmedVal : s.sem1_start,
       sem1_end:      s._confirmedKey === 'sem1-end-dp'      ? s._confirmedVal : s.sem1_end,
       sem2_start:    s._confirmedKey === 'sem2-start-dp'    ? s._confirmedVal : s.sem2_start,
@@ -1243,7 +1262,27 @@ function openTimePicker(targetInputId, callerForm) {
       examId: selectedExamId,
     };
   } else {
-    window._tpFormState = { targetInputId, callerForm };
+    // Class time picker — save all add-class form state
+    window._tpFormState = {
+      targetInputId, callerForm: 'class',
+      subject: document.getElementById('new-class-subject')?.value || '',
+      subjectEdit: document.getElementById('new-class-subject-edit')?.value || '',
+      subjectCustom: document.getElementById('new-class-subject-custom')?.value || '',
+      mode: document.getElementById('new-class-mode')?.value || 'In Person',
+      dateOption: document.getElementById('new-class-date-option')?.value || 'None',
+      term: document.getElementById('new-class-term')?.value || '1st Semester',
+      startDate: document.getElementById('new-class-start-date')?.value || '',
+      endDate: document.getElementById('new-class-end-date')?.value || '',
+      occurs: document.getElementById('new-class-occurs')?.value || 'Once',
+      startTime: document.getElementById('new-class-start-time')?.value || '',
+      endTime: document.getElementById('new-class-end-time')?.value || '',
+      section: document.getElementById('new-class-section')?.value || '',
+      teacher: document.getElementById('new-class-teacher')?.value || '',
+      room: document.getElementById('new-class-room')?.value || '',
+      building: document.getElementById('new-class-building')?.value || '',
+      days: Array.from(document.querySelectorAll('input[name="new-class-days"]:checked')).map(el => el.value),
+      editingClassId: window._editingClassId || null,
+    };
   }
 
   const existing = document.getElementById(targetInputId)?.value;
@@ -1307,10 +1346,24 @@ function openTimePicker(targetInputId, callerForm) {
   window.tpClockMin  = m => { tpMin  = m; buildClock(); };
   window.tpSetPeriod = p => { tpPeriod = p; buildClock(); };
   window.tpSwitchMode = mode => { tpMode = mode; buildClock(); };
-  window.tpConfirm = () => {
+  window.tpConfirm = (e) => {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
     const val = `${tpHour}:${String(tpMin).padStart(2,'0')} ${tpPeriod}`;
-    document.getElementById('modal-overlay').classList.remove('active');
-    tpRestoreForm(val);
+    const s = window._tpFormState || {};
+    if (s.callerForm === 'class') {
+      // For class picker: swap modal content back — do NOT close the overlay
+      if (s.targetInputId === 'new-class-start-time') s.startTime = val;
+      if (s.targetInputId === 'new-class-end-time')   s.endTime   = val;
+      const tmp = document.createElement('div');
+      tmp.innerHTML = _buildAddSubjectHTML();
+      document.getElementById('modal-content').replaceChildren(...tmp.childNodes);
+      setTimeout(() => {
+        tpRestoreForm(val);
+      }, 30);
+    } else {
+      document.getElementById('modal-overlay').classList.remove('active');
+      tpRestoreForm(val);
+    }
   };
   window.tpClear = () => {
     document.getElementById('modal-overlay').classList.remove('active');
@@ -1335,8 +1388,8 @@ function openTimePicker(targetInputId, callerForm) {
         <svg id="tp-clock-svg" width="220" height="220" style="display:block;"></svg>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:10px;border-top:1px solid #f0f4f8;">
-        <button onclick="closeModal();tpRestoreForm(null)" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 16px;border-radius:6px;font-size:0.9rem;">Cancel</button>
-        <button onclick="tpConfirm()" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 16px;border-radius:6px;font-size:0.9rem;">OK</button>
+        <button onclick="tpCancelPicker(event)" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 16px;border-radius:6px;font-size:0.9rem;">Cancel</button>
+        <button onclick="tpConfirm(event)" style="background:none;border:none;color:#1a73e8;font-weight:600;cursor:pointer;padding:6px 16px;border-radius:6px;font-size:0.9rem;">OK</button>
       </div>
     </div>
   `;
@@ -1344,10 +1397,64 @@ function openTimePicker(targetInputId, callerForm) {
   setTimeout(() => buildClock(), 30);
 }
 
+function tpCancelPicker(e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  const s = window._tpFormState || {};
+  if (s.callerForm === 'class') {
+    // Restore the add-class modal without closing it
+    const tmp = document.createElement('div');
+    tmp.innerHTML = _buildAddSubjectHTML();
+    document.getElementById('modal-content').replaceChildren(...tmp.childNodes);
+    setTimeout(() => tpRestoreForm(null), 30);
+  } else {
+    document.getElementById('modal-overlay').classList.remove('active');
+    tpRestoreForm(null);
+  }
+}
+
 function tpRestoreForm(confirmedVal) {
   const s = window._tpFormState;
   if (!s) return;
   const set = (id, val) => { const el = document.getElementById(id); if (el && val !== null && val !== undefined) el.value = val; };
+
+  if (s.callerForm === 'class') {
+    // Restore the add-class form fields (modal content already swapped back)
+    if (s.editingClassId) {
+      window._editingClassId = s.editingClassId;
+      const h3 = document.querySelector('#modal-content h3');
+      const btn = document.querySelector('#modal-content .btn-primary');
+      if (h3) h3.textContent = 'Edit Class Schedule';
+      if (btn) btn.textContent = 'Save Changes';
+    }
+    set('new-class-subject', s.subject);
+    set('new-class-subject-edit', s.subjectEdit);
+    set('new-class-subject-custom', s.subjectCustom);
+    set('new-class-mode', s.mode);
+    set('new-class-date-option', s.dateOption);
+    set('new-class-term', s.term);
+    set('new-class-start-date', s.startDate);
+    set('new-class-end-date', s.endDate);
+    set('new-class-occurs', s.occurs);
+    set('new-class-section', s.section);
+    set('new-class-teacher', s.teacher);
+    set('new-class-room', s.room);
+    set('new-class-building', s.building);
+    // Restore day checkboxes
+    if (s.days) {
+      s.days.forEach(day => {
+        const cb = document.querySelector(`input[name="new-class-days"][value="${day}"]`);
+        if (cb) cb.checked = true;
+      });
+    }
+    // Set confirmed or preserved time values
+    const startDisplay = s.targetInputId === 'new-class-start-time' && confirmedVal ? confirmedVal : s.startTime;
+    const endDisplay   = s.targetInputId === 'new-class-end-time'   && confirmedVal ? confirmedVal : s.endTime;
+    set('new-class-start-time', startDisplay);
+    set('new-class-end-time', endDisplay);
+    if (typeof onClassDateOptionChange === 'function') onClassDateOptionChange();
+    window._tpFormState = null;
+    return;
+  }
 
   if (s.callerForm === 'task') {
     openAddTask();

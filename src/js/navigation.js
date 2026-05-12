@@ -6,6 +6,10 @@ async function loadOrCreateProfile(user) {
     .eq('id', user.id)
     .single();
 
+  // Detect if this account was created via Google OAuth
+  const identities = user.identities || [];
+  state.profile.isOAuthAccount = identities.some(i => i.provider === 'google');
+
   if (existing) {
     state.profile.name = [existing.first_name, existing.last_name].filter(Boolean).join(' ') || user.email;
     state.profile.username = existing.username || ('@' + (user.email || '').split('@')[0]);
@@ -15,6 +19,19 @@ async function loadOrCreateProfile(user) {
     state.profile.avatarUrl = existing.avatar_url || '';
     state.profile.createdAt = existing.created_at || '';
     state.profile.updatedAt = existing.updated_at || '';
+    // Extended academic profile fields
+    state.profile.school = existing.school || '';
+    state.profile.course = existing.course || '';
+    state.profile.yearLevel = existing.year_level || '';
+    state.profile.semester = existing.semester || '';
+    state.profile.academicYear = existing.academic_year || '';
+    // Semester date ranges
+    state.profile.sem1Start = existing.sem1_start || '';
+    state.profile.sem1End = existing.sem1_end || '';
+    state.profile.sem2Start = existing.sem2_start || '';
+    state.profile.sem2End = existing.sem2_end || '';
+    state.profile.midyearStart = existing.midyear_start || '';
+    state.profile.midyearEnd = existing.midyear_end || '';
   } else {
     const meta = user.user_metadata || {};
     const firstName = meta.given_name || meta.first_name || meta.full_name?.split(' ')[0] || '';
@@ -37,23 +54,66 @@ async function loadOrCreateProfile(user) {
     state.profile.dob = '';
     state.profile.sex = '';
     state.profile.avatarUrl = avatarUrl;
+    state.profile.sem1Start = '';
+    state.profile.sem1End = '';
+    state.profile.sem2Start = '';
+    state.profile.sem2End = '';
+    state.profile.midyearStart = '';
+    state.profile.midyearEnd = '';
   }
 }
 
 // ===== SESSION RESTORE (runs after DOM is ready) =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const appShell = document.getElementById('app-shell');
+
+  // On standalone auth pages (login, signup) there is no app-shell.
+  // After Google OAuth, Supabase redirects back here and fires SIGNED_IN.
+  // Redirect to dashboard so the user lands in the app.
+  if (!appShell) {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        window.location.href = 'forgot-password.html';
+        return;
+      }
+      if (event === 'SIGNED_IN' && session) {
+        // Ensure profile row exists before navigating
+        await loadOrCreateProfile(session.user);
+        window.location.href = 'dashboard.html';
+      }
+    });
+    return;
+  }
+
+  // Check if user is already logged in on page load (handles refresh)
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+      document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+      appShell.style.display = 'flex';
+      await loadOrCreateProfile(session.user);
+      updateProfileDisplay();
+      initApp();
+      syncActivitiesDropdown();
+    }
+
+  // Single listener handles all auth state transitions
   supabase.auth.onAuthStateChange(async (event, session) => {
-    const appShell = document.getElementById('app-shell');
-    if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION')) {
-      if (appShell && appShell.style.display !== 'flex') {
+    if (event === 'PASSWORD_RECOVERY') {
+      window.location.href = 'forgot-password.html';
+      return;
+    }
+
+    if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+      if (appShell.style.display !== 'flex') {
         document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
         appShell.style.display = 'flex';
         await loadOrCreateProfile(session.user);
-        showAppPage('page-dashboard');
+        updateProfileDisplay();
         initApp();
+        syncActivitiesDropdown();
       }
     } else if (event === 'SIGNED_OUT') {
-      if (appShell) appShell.style.display = 'none';
+      appShell.style.display = 'none';
       document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
       const login = document.getElementById('page-login');
       if (login) login.classList.add('active');
@@ -61,7 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
       state.exams = [];
       state.classes = [];
       state.events = [];
-      state.profile = { name:'', username:'', email:'', dob:'', sex:'', avatarUrl:'', createdAt:'', updatedAt:'' };
+      state.profile = {
+        name: '', username: '', email: '', dob: '', sex: '',
+        avatarUrl: '', createdAt: '', updatedAt: '',
+        school: '', course: '', yearLevel: '', semester: '', academicYear: '',
+        sem1Start: '', sem1End: '', sem2Start: '', sem2End: '',
+        midyearStart: '', midyearEnd: '',
+      };
       state.selectedTaskId = null;
       state.selectedExamId = null;
     }
@@ -69,80 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== PAGE NAVIGATION =====
-function showPage(pageId) {
-  closeModal();
-  document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
-  const appShell = document.getElementById('app-shell');
-
-  if (['page-dashboard','page-calendar','page-tasks','page-classes','page-exam','page-quiz','page-profile'].includes(pageId)) {
-    appShell.style.display = 'flex';
-    showAppPage(pageId);
-    updateCounts();
-  } else {
-    appShell.style.display = 'none';
-    const target = document.getElementById(pageId);
-    if (target) target.classList.add('active');
-  }
-  state.currentPage = pageId;
-}
-
-function showAppPage(pageId) {
-  document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(pageId);
-  if (target) target.classList.add('active');
-  state.currentPage = pageId;
-
-  const sub = document.getElementById('activities-sub');
-  const arrow = document.getElementById('activities-arrow');
-  const nav = document.getElementById('activities-nav');
-  if (sub) sub.classList.toggle('open', state.activitiesOpen);
-  if (arrow) arrow.classList.toggle('open', state.activitiesOpen);
-  if (nav) nav.classList.toggle('active', state.activitiesOpen);
-
-  // Update nav active state
-  document.querySelectorAll('.nav-item, .nav-sub-item').forEach(n => n.classList.remove('active'));
-  const navMap = {
-    'page-dashboard': '[data-page="page-dashboard"]',
-    'page-calendar': '[data-page="page-calendar"]',
-    'page-tasks': '[data-page="page-tasks"]',
-    'page-classes': '[data-page="page-classes"]',
-    'page-exam': '[data-page="page-exam"]',
-    'page-quiz': '[data-page="page-quiz"]',
-    'page-profile': '.avatar-btn',
-  };
-  if (navMap[pageId]) {
-    const navEl = document.querySelector(navMap[pageId]);
-    if (navEl) navEl.classList.add('active');
-  }
-
-  // Render page content
-  if (pageId === 'page-dashboard') renderClasses();
-  if (pageId === 'page-classes') {
-    // Ensure tab buttons match the current clsTab state
-    const currentBtn = document.getElementById('cls-tab-current');
-    const pastBtn = document.getElementById('cls-tab-past');
-    if (currentBtn && pastBtn) {
-      currentBtn.style.background = clsTab === 'current' ? 'var(--blue)' : 'transparent';
-      currentBtn.style.color = clsTab === 'current' ? '#fff' : 'var(--blue)';
-      pastBtn.style.background = clsTab === 'past' ? 'var(--blue)' : 'transparent';
-      pastBtn.style.color = clsTab === 'past' ? '#fff' : 'var(--blue)';
-    }
-    renderClassSchedule();
-  }
-  if (pageId === 'page-calendar') renderCalendar();
-  if (pageId === 'page-tasks') renderTasks();
-  if (pageId === 'page-exam') renderExams();
-  if (pageId === 'page-profile') updateProfileDisplay();
-  if (pageId === 'page-quiz') initQuizPage();
-
-  // Show/hide datetime on calendar page
-  const datetimeEl = document.getElementById('topbar-datetime');
-  if (datetimeEl) {
-    datetimeEl.classList.toggle('hidden', pageId === 'page-calendar');
-  }
-
-  closeSidebarMobile();
-}
+// Note: showPage() and showAppPage() removed since app uses separate HTML files
+// Each page is now standalone with its own HTML file
 
 // ===== SIDEBAR =====
 function toggleActivities() {
@@ -153,6 +147,21 @@ function toggleActivities() {
   sub.classList.toggle('open', state.activitiesOpen);
   if (arrow) arrow.classList.toggle('open', state.activitiesOpen);
   nav.classList.toggle('active', state.activitiesOpen);
+}
+
+function syncActivitiesDropdown() {
+  const ACTIVITY_PAGES = new Set(['tasks.html', 'classes.html', 'exams.html', 'quiz.html']);
+  const currentPage = window.location.pathname.split('/').pop();
+  // Always keep dropdown open when on an activity page
+  if (ACTIVITY_PAGES.has(currentPage)) {
+    state.activitiesOpen = true;
+  }
+  const sub = document.getElementById('activities-sub');
+  const arrow = document.getElementById('activities-arrow');
+  const nav = document.getElementById('activities-nav');
+  if (sub) sub.classList.toggle('open', state.activitiesOpen);
+  if (arrow) arrow.classList.toggle('open', state.activitiesOpen);
+  if (nav) nav.classList.toggle('active', state.activitiesOpen);
 }
 
 function toggleSidebar() {

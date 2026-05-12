@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>if(localStorage.getItem('darkMode')==='true'){document.documentElement.setAttribute('data-theme','dark');}</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz - CampusMate</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4a6cf7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CampusMate" />
+  <link rel="apple-touch-icon" href="/image/Logo.png" />
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/quiz.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/calendar.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/exams.css"/>
+  <link rel="stylesheet" href="css/tasks.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/profile.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <link rel="stylesheet" href="css/terms.css"/>
+  <link rel="stylesheet" href="css/variables.css"/>
+  <link rel="stylesheet" href="css/classes.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
+  <link rel="stylesheet" href="css/polish.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div id="app-shell" class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand" onclick="window.location.href='quiz.html'">
+      
+      <img src="image/Logo.png" alt="CampusMate Logo" class="logo-icon" style="width:28px;height:28px;object-fit:contain;border-radius:6px;">
+      <span class="brand-name">CampusMate</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="page-dashboard" onclick="window.location.href='dashboard.html'">
+        <span class="nav-icon" id="nav-icon-dashboard"></span> Dashboard
+      </a>
+      <a class="nav-item" data-page="page-calendar" onclick="window.location.href='calendar.html'">
+        <span class="nav-icon" id="nav-icon-calendar"></span> Calendar
+      </a>
+      <div class="nav-item expandable" id="activities-nav" onclick="toggleActivities()">
+        <span class="nav-icon" id="nav-icon-activities"></span> Activities
+        <span class="nav-arrow" id="activities-arrow"></span>
+      </div>
+      <div id="activities-sub" class="nav-sub">
+        <a class="nav-sub-item" data-page="page-tasks" onclick="window.location.href='tasks.html'">Tasks</a>
+        <a class="nav-sub-item" data-page="page-classes" onclick="window.location.href='classes.html'">Classes</a>
+        <a class="nav-sub-item" data-page="page-exam" onclick="window.location.href='exams.html'">Exam</a>
+        <a class="nav-sub-item  active" data-page="page-quiz" onclick="window.location.href='quiz.html'">Quiz</a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <a class="logout-btn add-new-btn" onclick="handleAddNew()">
+        <span id="nav-icon-plus"></span> Add New
+      </a>
+    </nav>
+    <button class="logout-btn" onclick="doLogout()"><span id="nav-icon-logout"></span> Log Out</button>
+  </aside>
+
+  <!-- TOPBAR -->
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="topbar-menu-icon" onclick="toggleSidebar()" aria-label="Toggle navigation menu" aria-expanded="false" type="button"></button>
+        <div class="topbar-datetime" id="topbar-datetime"></div>
+      </div>
+      <div class="topbar-right">
+        <div style="position:relative;display:inline-flex;">
+          <button class="icon-btn" id="topbar-bell-icon" onclick="showNotifications()" aria-label="View notifications" type="button"></button>
+          <span id="notif-badge" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;background:#e53e3e;border-radius:50%;border:2px solid var(--topbar-bg,#fff);pointer-events:none;"></span>
+        </div>
+        <button class="icon-btn" id="topbar-settings-icon" onclick="showSettings()" aria-label="Open settings" type="button"></button>
+        <button class="icon-btn avatar-btn" id="topbar-user-icon" onclick="window.location.href='profile.html'" aria-label="View profile" type="button"></button>
+      </div>
+    </header>
+
+    <main id="main-content" class="main-content">
+      <div id="page-quiz" class="app-page active" role="region" aria-label="Quiz">
+      <div class="quiz-layout">
+        <div class="quiz-left">
+          <h2 class="quiz-panel-title">AI Quiz Generator</h2>
+          <p class="quiz-sub">Set your options and enter a topic.</p>
+          <div class="quiz-field-group">
+            <label class="quiz-field-label">Number of items</label>
+            <select id="quiz-count" class="quiz-select">
+              <option>5</option><option selected>10</option><option>15</option><option>20</option>
+            </select>
+          </div>
+          <div class="quiz-field-group">
+            <label class="quiz-field-label">Type of quiz</label>
+            <select id="quiz-type" class="quiz-select">
+              <option>Identification</option><option>Multiple Choice</option><option>True or False</option><option>Essay</option>
+            </select>
+          </div>
+          <div class="quiz-field-group">
+            <label class="quiz-field-label">Difficulty</label>
+            <select id="quiz-diff" class="quiz-select">
+              <option selected>Easy</option><option>Medium</option><option>Hard</option>
+            </select>
+          </div>
+          <div class="quiz-field-group" style="flex:1;display:flex;flex-direction:column;">
+            <label class="quiz-field-label">Topic / Lesson</label>
+            <textarea id="quiz-topic" class="quiz-textarea" placeholder="e.g. World War 2, Photosynthesis, Newton's Laws..." oninput="this.style.height='0';this.style.height=this.scrollHeight+'px'"></textarea>
+          </div>
+          <button class="quiz-generate-btn" id="quiz-send-btn" onclick="generateQuiz()" type="button"><span id="quiz-gen-icon"></span> Generate Quiz</button>
+        </div>
+        <div class="quiz-right">
+          <div class="quiz-console">
+            <div class="console-header">
+              <span>Generated Quiz</span>
+              <div>
+                <button class="console-btn" id="quiz-copy-btn" onclick="copyQuiz()" title="Copy quiz" aria-label="Copy quiz to clipboard" type="button"></button>
+                <button class="console-btn" id="quiz-export-btn" onclick="exportQuiz()" title="Export quiz" aria-label="Export quiz as PDF" type="button"></button>
+              </div>
+            </div>
+            <div id="quiz-output" class="console-body">
+              <p class="console-placeholder">Your generated quiz will appear here...</p>
+            </div>
+          </div>
+          <div class="quiz-console" style="margin-top:16px;">
+            <div class="console-header">
+              <span id="quiz-history-header"></span>
+              <button onclick="clearAllQuizHistory()" title="Clear All" aria-label="Clear all quiz history" type="button" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:0.78rem;font-weight:600;padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:4px;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='none'"><span id="quiz-clear-icon"></span> Clear All</button>
+            </div>
+            <div id="quiz-history-list" class="console-body" style="max-height:220px;overflow-y:auto;">
+              <p style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:12px 0;">No quiz history yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div id="modal-content"></div>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal" type="button">&#x2715;</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/icons.js"></script>
+<script src="config/supabaseClient.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/exams.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/profile.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+
+  // Handle hash navigation for auth pages from landing page
+  window.addEventListener('load', () => {
+    const hash = window.location.hash;
+    if (hash === '#login') {
+      window.location.href = 'login.html';
+    } else if (hash === '#signup') {
+      window.location.href = 'signup.html';
+    }
+  });
+</script>
+</body>
+</html>

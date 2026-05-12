@@ -84,7 +84,7 @@ function renderUpcomingSection() {
 function renderClasses() {
   renderDashboardName();
   const markup = state.classes.map(c => `
-    <div class="class-card" onclick="showAppPage('page-classes'); setTimeout(() => showClassDetails(${c.id}, ''), 100);">
+    <div class="class-card" onclick="window.location.href='classes.html';">
       <span>${escapeHtml(c.subject)}</span>
       ${c.section ? `<span class="card-section">${escapeHtml(c.section)}</span>` : ''}
     </div>

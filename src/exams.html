@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>if(localStorage.getItem('darkMode')==='true'){document.documentElement.setAttribute('data-theme','dark');}</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exams - CampusMate</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4a6cf7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CampusMate" />
+  <link rel="apple-touch-icon" href="/image/Logo.png" />
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/quiz.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/calendar.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/exams.css"/>
+  <link rel="stylesheet" href="css/tasks.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/profile.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <link rel="stylesheet" href="css/terms.css"/>
+  <link rel="stylesheet" href="css/variables.css"/>
+  <link rel="stylesheet" href="css/classes.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
+  <link rel="stylesheet" href="css/polish.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div id="app-shell" class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand" onclick="window.location.href='exams.html'">
+      
+      <img src="../image/Logo.png" alt="CampusMate Logo" class="logo-icon" style="width:28px;height:28px;object-fit:contain;border-radius:6px;">
+      <span class="brand-name">CampusMate</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="page-dashboard" onclick="window.location.href='dashboard.html'">
+        <span class="nav-icon" id="nav-icon-dashboard"></span> Dashboard
+      </a>
+      <a class="nav-item" data-page="page-calendar" onclick="window.location.href='calendar.html'">
+        <span class="nav-icon" id="nav-icon-calendar"></span> Calendar
+      </a>
+      <div class="nav-item expandable" id="activities-nav" onclick="toggleActivities()">
+        <span class="nav-icon" id="nav-icon-activities"></span> Activities
+        <span class="nav-arrow" id="activities-arrow"></span>
+      </div>
+      <div id="activities-sub" class="nav-sub">
+        <a class="nav-sub-item" data-page="page-tasks" onclick="window.location.href='tasks.html'">Tasks</a>
+        <a class="nav-sub-item" data-page="page-classes" onclick="window.location.href='classes.html'">Classes</a>
+        <a class="nav-sub-item  active" data-page="page-exam" onclick="window.location.href='exams.html'">Exam</a>
+        <a class="nav-sub-item" data-page="page-quiz" onclick="window.location.href='quiz.html'">Quiz</a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <a class="logout-btn add-new-btn" onclick="handleAddNew()">
+        <span id="nav-icon-plus"></span> Add New
+      </a>
+    </nav>
+    <button class="logout-btn" onclick="doLogout()"><span id="nav-icon-logout"></span> Log Out</button>
+  </aside>
+
+  <!-- TOPBAR -->
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="topbar-menu-icon" onclick="toggleSidebar()" aria-label="Toggle navigation menu" aria-expanded="false" type="button"></button>
+        <div class="topbar-datetime" id="topbar-datetime"></div>
+      </div>
+      <div class="topbar-right">
+        <div style="position:relative;display:inline-flex;">
+          <button class="icon-btn" id="topbar-bell-icon" onclick="showNotifications()" aria-label="View notifications" type="button"></button>
+          <span id="notif-badge" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;background:#e53e3e;border-radius:50%;border:2px solid var(--topbar-bg,#fff);pointer-events:none;"></span>
+        </div>
+        <button class="icon-btn" id="topbar-settings-icon" onclick="showSettings()" aria-label="Open settings" type="button"></button>
+        <button class="icon-btn avatar-btn" id="topbar-user-icon" onclick="window.location.href='profile.html'" aria-label="View profile" type="button"></button>
+      </div>
+    </header>
+
+    <main id="main-content" class="main-content">
+      <div id="page-exam" class="app-page active" role="region" aria-label="Exams">
+      <div class="tasks-layout">
+        <div class="tasks-list-panel">
+          <div class="tasks-header">
+            <h1><span class="header-icon" id="page-icon-exams"></span> Your Exams</h1>
+          </div>
+          <div class="tasks-tabs">
+            <button class="task-tab active" onclick="switchExamTab('incoming')" id="tab-incoming">Incoming</button>
+            <button class="task-tab" onclick="switchExamTab('past-exams')" id="tab-past-exams">Past</button>
+          </div>
+          <div class="header-actions" style="display:flex;gap:10px;margin-bottom:16px;">
+            <button class="btn-add" onclick="openAddExam()">&#xFF0B; Add Exam</button>
+            <button class="btn-remove" onclick="removeSelectedExam()">&#xFF0D; Remove</button>
+          </div>
+          <div id="exams-container"></div>
+        </div>
+        <div class="tasks-detail-panel" id="exam-detail-panel" style="display:none;">
+          <div class="detail-image" id="exam-detail-image" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+          <div class="detail-content">
+            <h3 id="exam-detail-subject"></h3>
+            <div class="detail-subject-tag" id="exam-detail-type"></div>
+            <div class="detail-datetime">
+              <span id="exam-detail-date"></span>
+              <span id="exam-detail-time"></span>
+            </div>
+            <div class="detail-info-row" style="margin-top:20px;">
+              <div class="detail-info-card" style="background:var(--bg-input);padding:16px;border-radius:12px;">
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px;">Status</div>
+                <div id="exam-detail-status" style="font-weight:600;color:var(--text-primary);"></div>
+              </div>
+            </div>
+            <div id="exam-detail-notes" style="margin-top:16px;padding:12px;background:var(--blue-tint);border-radius:8px;font-size:0.9rem;color:var(--text-secondary);"></div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn-mark-complete" id="exam-edit-btn" onclick="editSelectedExam()" style="flex:1;background:var(--blue);"> Edit</button>
+            </div>
+          </div>
+        </div>
+        <div class="tasks-detail-panel empty" id="exam-detail-empty">
+          <div class="empty-detail">
+            <span class="empty-icon" id="empty-icon-exams"></span>
+            <p>Select an exam to view details</p>
+          </div>
+        </div>
+      </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div id="modal-content"></div>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal" type="button">&#x2715;</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/icons.js"></script>
+<script src="config/supabaseClient.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/exams.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/profile.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+
+  // Handle hash navigation for auth pages from landing page
+  window.addEventListener('load', () => {
+    const hash = window.location.hash;
+    if (hash === '#login') {
+      window.location.href = 'login.html';
+    } else if (hash === '#signup') {
+      window.location.href = 'signup.html';
+    }
+  });
+</script>
+</body>
+</html>

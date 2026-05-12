@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusMate</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4a6cf7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CampusMate" />
+  <link rel="apple-touch-icon" href="/image/Logo.png" />
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/quiz.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+  <link rel="stylesheet" href="css/calendar.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/exams.css"/>
+  <link rel="stylesheet" href="css/tasks.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/profile.css"/>
+  <link rel="stylesheet" href="css/responsive.css"/>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <link rel="stylesheet" href="css/terms.css"/>
+  <link rel="stylesheet" href="css/variables.css"/>
+  <link rel="stylesheet" href="css/classes.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
+  <link rel="stylesheet" href="css/polish.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div id="page-login" class="auth-page active">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-left">
+      <div class="brand-logo">
+        <img src="image/Logo.png" alt="CampusMate Logo" class="logo-icon" style="width:28px;height:28px;object-fit:contain;border-radius:6px;">
+        <span class="brand-name">CampusMate</span>
+      </div>
+      <h2>Welcome back!</h2>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="Enter your email" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="login-password" placeholder="Enter your password" />
+          <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">Show</button>
+        </div>
+        <a class="forgot-link" onclick="window.location.href='forgot-password.html'">Forgot Password?</a>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Login</button>
+      <div class="divider"><span>or sign in with</span></div>
+      <button class="btn-google" onclick="signInWithGoogle()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" />Google</button>
+      <p class="auth-switch">Don't have an account? <a onclick="window.location.href='signup.html'">Sign up</a></p>
+   </div>
+      <div class="auth-right">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <a href="landing-page.html"><img src="image/Logo.png" alt="CampusMate" class="auth-logo-img" style="max-width:80%;max-height:70%;object-fit:contain; margin-left: 35px;"></a>
+          <span style="font-size:0.85rem;color:#5F5E5A;text-align:center;max-width:200px;">Your smart student companion</span>
+        </div>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reason') === 'archived') {
+    showToast('This account has been deleted and can no longer be accessed.');
+  }
+</script>
+<div id="toast" class="toast"></div>
+
+<script src="js/icons.js"></script>
+<script src="config/supabaseClient.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/exams.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/profile.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+
+  // Handle hash navigation from landing page links
+  window.addEventListener('load', () => {
+    const hash = window.location.hash;
+    if (hash === '#signup') {
+      window.location.href = 'signup.html';
+    }
+  });
+</script>
+</body>
+</html>

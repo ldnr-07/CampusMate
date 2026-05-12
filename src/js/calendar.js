@@ -151,7 +151,7 @@ function renderYearView() {
   const year = state.calDate.getFullYear();
   const today = new Date();
 
-  let html = '<div class="year-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px;">';
+  let html = '<div class="year-grid">';
 
   for (let m = 0; m < 12; m++) {
     const monthDate = new Date(year, m, 1);
@@ -159,7 +159,7 @@ function renderYearView() {
     const daysInMonth = new Date(year, m + 1, 0).getDate();
     const isCurrentMonth = today.getFullYear() === year && today.getMonth() === m;
 
-    html += `<div class="year-month" style="background:var(--bg-card);border-radius:12px;padding:12px;min-height:180px;">`;
+    html += `<div class="year-month">`;
     html += `<div class="year-month-title" style="font-weight:700;font-size:0.95rem;color:var(--blue);margin-bottom:8px;${isCurrentMonth?'background:var(--blue);color:white;padding:4px 8px;border-radius:6px;display:inline-block;':''}">${MONTHS[m].substring(0,3)}</div>`;
 
     // Mini calendar for this month

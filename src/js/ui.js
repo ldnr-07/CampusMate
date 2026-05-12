@@ -117,22 +117,6 @@ async function showSettings(prefillAcad) {
           <span class="toggle-slider" style="position:absolute;inset:0;background:var(--gray-200);border-radius:13px;transition:0.3s;"></span>
         </label>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-pale);">
-        <span style="font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${icon('bell',16)} Notifications</span>
-        <label class="toggle-switch" style="cursor:pointer;position:relative;display:inline-block;width:48px;height:26px;">
-          <input type="checkbox" id="notif-setting" style="opacity:0;width:0;height:0;" onchange="toggleNotificationSetting()" ${Notification.permission === 'granted' ? 'checked' : ''}>
-          <span class="toggle-slider" style="position:absolute;inset:0;background:var(--gray-200);border-radius:13px;transition:0.3s;"></span>
-        </label>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-pale);">
-        <span style="font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${icon('globe',16)} Language</span>
-        <select id="lang-setting" onchange="saveLanguageSetting(this.value)" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);">
-          <option value="en" ${(localStorage.getItem('appLang')||'en')==='en'?'selected':''}>English</option>
-          <option value="fil" ${localStorage.getItem('appLang')==='fil'?'selected':''}>Filipino</option>
-          <option value="es" ${localStorage.getItem('appLang')==='es'?'selected':''}>Español</option>
-          <option value="ja" ${localStorage.getItem('appLang')==='ja'?'selected':''}>日本語</option>
-        </select>
-      </div>
 
       <div style="padding:10px 0;">
         <div style="font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:8px;margin-bottom:14px;">${icon('classes',16)} Academic Setup</div>
@@ -327,7 +311,7 @@ function handleAddNew() {
       <button class="btn-primary" onclick="closeModal();openAddTask();">${icon('tasks',16)} New Task</button>
       <button class="btn-primary" style="background:#1a1a2e;" onclick="closeModal();openAddExam();">${icon('exam',16)} New Exam</button>
       <button class="btn-primary" style="background:#2b6cb0;" onclick="closeModal();openAddSubject();">${icon('classes',16)} New Class</button>
-      <button class="btn-primary" style="background:#38a169;" onclick="closeModal();showAppPage('page-quiz');">${icon('quiz',16)} Generate Quiz</button>
+      <button class="btn-primary" style="background:#38a169;" onclick="closeModal();window.location.href='quiz.html';">${icon('quiz',16)} Generate Quiz</button>
     </div>
   `;
   openModal(content);
@@ -371,10 +355,19 @@ function syncCalendarEvents() {
     }
   });
 
-  // Expand recurring classes into dated events for a 6-month window
+// Expand recurring classes into dated events
+  // Window spans from the earliest class startDate to the latest class endDate,
+  // falling back to a 6-month window around today for classes with no dates set.
   const SHORT_DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const winStart = new Date(); winStart.setMonth(winStart.getMonth() - 1); winStart.setHours(0,0,0,0);
-  const winEnd   = new Date(); winEnd.setMonth(winEnd.getMonth() + 5);   winEnd.setHours(0,0,0,0);
+  const fallbackStart = new Date(); fallbackStart.setMonth(fallbackStart.getMonth() - 1); fallbackStart.setHours(0,0,0,0);
+  const fallbackEnd   = new Date(); fallbackEnd.setMonth(fallbackEnd.getMonth() + 5);     fallbackEnd.setHours(0,0,0,0);
+  // Compute a window that covers every class's own date range
+  let winStart = new Date(fallbackStart);
+  let winEnd   = new Date(fallbackEnd);
+  state.classes.forEach(c => {
+    if (c.startDate) { const d = new Date(c.startDate + 'T00:00:00'); if (d < winStart) winStart = d; }
+    if (c.endDate)   { const d = new Date(c.endDate   + 'T00:00:00'); if (d > winEnd)   winEnd   = d; }
+  });
   state.classes.forEach(c => {
     const classDays = c.days && c.days.length ? c.days : [];
     if (!classDays.length) return;
@@ -393,7 +386,12 @@ function syncCalendarEvents() {
       }
     }
     const timeLabel = c.startTime && c.endTime ? `${c.startTime} – ${c.endTime}` : '';
-    for (let d = new Date(winStart); d <= winEnd; d.setDate(d.getDate() + 1)) {
+    // Clamp the iteration window to the class's own start/end dates if set
+    const classStart = c.startDate ? new Date(c.startDate + 'T00:00:00') : new Date(winStart);
+    const classEnd   = c.endDate   ? new Date(c.endDate   + 'T00:00:00') : new Date(winEnd);
+    const iterStart  = classStart > winStart ? classStart : new Date(winStart);
+    const iterEnd    = classEnd   < winEnd   ? classEnd   : new Date(winEnd);
+    for (let d = new Date(iterStart); d <= iterEnd; d.setDate(d.getDate() + 1)) {
       const shortDayName = SHORT_DAY_NAMES[d.getDay()];
       if (classDays.some(cd => cd.trim().toLowerCase() === shortDayName.toLowerCase())) {
         const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -409,18 +407,49 @@ async function initApp() {
   if (!loader) {
     loader = document.createElement('div');
     loader.id = 'app-loader';
-    loader.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div class="quiz-spinner" style="width:44px;height:44px;border-width:5px;"></div>
-      <p style="font-family:var(--brand-font);font-weight:700;color:var(--text-secondary);font-size:0.95rem;">Loading your data...</p>
-    </div>`;
-    loader.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+    loader.innerHTML = `
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="
+          width:220px;height:220px;border-radius:25%;
+          background:var(--surface);
+          box-shadow:0 8px 40px rgba(0,0,0,0.18);
+          display:flex;align-items:center;justify-content:center;
+          flex-direction:column;gap:14px;
+        ">
+          <div class="quiz-spinner" style="width:44px;height:44px;border-width:5px;"></div>
+          <p style="font-family:var(--brand-font);font-weight:700;color:var(--text-secondary);font-size:0.9rem;margin:0;">Loading...</p>
+        </div>
+      </div>`;
+    loader.style.cssText = 'position:fixed;inset:0;background:transparent;z-index:9999;display:flex;align-items:center;justify-content:center;';
     document.body.appendChild(loader);
   }
 
-  await Promise.all([
+await Promise.all([
     loadTasksFromSupabase(),
     loadExamsFromSupabase(),
     loadClassesFromSupabase(),
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('first_name,last_name,username,email,dob,sex,avatar_url,created_at,updated_at')
+        .eq('id', user.id)
+        .single();
+      if (prof) {
+        state.profile.name      = [prof.first_name, prof.last_name].filter(Boolean).join(' ');
+        state.profile.username  = prof.username  || '';
+        state.profile.email     = prof.email     || user.email || '';
+        state.profile.dob       = prof.dob       || '';
+        state.profile.sex       = prof.sex       || '';
+        state.profile.avatarUrl = prof.avatar_url || '';
+        state.profile.createdAt = prof.created_at || '';
+        state.profile.updatedAt = prof.updated_at || '';
+      } else {
+        // Fall back to auth email if no profile row exists yet
+        state.profile.email = user.email || '';
+      }
+    })(),
   ]);
   syncCalendarEvents();
   updateCounts();

@@ -72,3 +72,21 @@
 .btn-enter-results { background: var(--blue); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--brand-font); font-size: 0.85rem; transition: background 0.2s; }
 .btn-see-results { background: var(--blue); color: white; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: var(--brand-font); font-size: 0.85rem; transition: background 0.2s; }
 .btn-enter-results:hover, .btn-see-results:hover { background: var(--blue-hover); }
+
+/* Match number inputs to text input style in modals */
+.modal input[type="number"] {
+  padding: 11px 16px;
+  border: 2px solid var(--gray-pale);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-input);
+  transition: border 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.modal input[type="number"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: white;
+}

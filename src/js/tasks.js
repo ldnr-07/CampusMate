@@ -26,13 +26,12 @@ function renderTasks() {
   const container = document.getElementById('tasks-container');
   if (!container) return;
 
-  // Populate subject filter
   const subjectFilter = document.getElementById('task-subject-filter');
   if (subjectFilter) {
     const currentVal = subjectFilter.value;
     const subjects = [...new Set(state.tasks.map(t => t.subject).filter(Boolean))];
     subjectFilter.innerHTML = '<option value="">All Subjects</option>' +
-      subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+      subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
     subjectFilter.value = currentVal;
   }
 
@@ -56,19 +55,20 @@ function renderTasks() {
     const progress = t.checked ? 100 : (t.progress || 0);
     const statusClass = t.checked ? 'completed' : (t.status === 'overdue' ? 'overdue' : '');
     const isSelected = selectedTaskId === t.id ? 'selected' : '';
+    // FIX: escape all user-supplied strings before injecting into innerHTML
     return `
     <div class="task-card ${statusClass} ${isSelected}" data-id="${t.id}" onclick="selectTask(${t.id})">
       <div class="task-indicator">✓</div>
       <div class="task-main">
-        <div class="task-title">${t.name}</div>
+        <div class="task-title">${escapeHtml(t.name)}</div>
         <div class="task-meta">
-          <span class="task-subject-tag">${t.subject}</span>
-          <span>${t.due}${t.dueTime ? ' · ' + formatTimeLabel(t.dueTime) : ''}</span>
+          <span class="task-subject-tag">${escapeHtml(t.subject || '')}</span>
+          <span>${escapeHtml(t.due)}${t.dueTime ? ' · ' + escapeHtml(formatTimeLabel(t.dueTime)) : ''}</span>
         </div>
       </div>
       <div class="task-progress">${progress}%</div>
     </div>
-  `}).join('');
+  `;}).join('');
 
   if (selectedTaskId) showTaskDetail(selectedTaskId);
 }
@@ -112,7 +112,6 @@ function showTaskDetail(id) {
     markBtn.textContent = task.checked ? '✓ Completed' : 'Mark as Complete';
     markBtn.classList.toggle('completed', task.checked);
   }
-
 }
 
 // Progress bar drag functionality
@@ -123,8 +122,6 @@ function startProgressDrag(e) {
   isDraggingProgress = true;
   updateProgressFromEvent(e);
   e.preventDefault();
-
-  // Add global event listeners
   document.addEventListener('mousemove', onProgressDrag);
   document.addEventListener('mouseup', stopProgressDrag);
   document.addEventListener('touchmove', onProgressDrag, { passive: false });
@@ -148,14 +145,10 @@ function stopProgressDrag() {
 function updateProgressFromEvent(e) {
   const container = document.getElementById('progress-container');
   if (!container) return;
-
   const rect = container.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   let percent = ((clientX - rect.left) / rect.width) * 100;
-
-  // Clamp between 0 and 100
   percent = Math.max(0, Math.min(100, Math.round(percent)));
-
   updateTaskProgress(percent);
 }
 
@@ -217,7 +210,6 @@ function switchTaskTab(tab) {
   const tabEl = document.getElementById(`tab-${tab}`);
   if (tabEl) tabEl.classList.add('active');
   renderTasks();
-  if (state.currentPage !== 'page-tasks') showAppPage('page-tasks');
 }
 
 function toggleTask(id) {
@@ -243,9 +235,6 @@ function onTaskSubjectChange(sel) {
 }
 
 function openAddTask() {
-  const minDate = getTodayInputDate();
-  const maxDate = getOneYearFromTodayInputDate();
-  const subjectOptions = getSubjectOptionsDatalist();
   const content = `
     <h3>Add New Task</h3>
     <div class="form-group"><label>Task Name</label><input type="text" id="new-task-name" placeholder="Enter task name" /></div>
@@ -253,28 +242,24 @@ function openAddTask() {
       <label>Subject</label>
       <select id="new-task-subject-sel" style="width:100%;padding:10px;border:2px solid #e8edf2;border-radius:8px;font-size:0.9rem;" onchange="onTaskSubjectChange(this)">
         <option value="">Select subject</option>
-        ${[...new Set(state.classes.map(c=>c.subject).filter(Boolean))].map(s=>`<option value="${s}">${s}</option>`).join('')}
+        ${[...new Set(state.classes.map(c=>c.subject).filter(Boolean))].map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')}
       </select>
-      <input type="text" id="new-task-subject" placeholder="Enter subject name" style="display:none;" />
+      <input type="text" id="new-task-subject" placeholder="Enter subject name" style="display:none;margin-top:8px;" />
     </div>
     <div class="form-group"><label>Class</label><input type="text" id="new-task-class" placeholder="e.g. BSCS 2B" /></div>
     <div class="form-group"><label>Type</label><select id="new-task-type" style="width:100%;padding:10px;border:2px solid #e8edf2;border-radius:8px;font-size:0.9rem;"><option value="Assignment">Assignment</option><option value="Lab">Lab</option><option value="Project">Project</option><option value="Quiz">Quiz</option></select></div>
     <div class="form-group">
       <label>Due Date</label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="new-task-due" placeholder="Select due date" readonly
-          style="flex:1;cursor:pointer;" onclick="openDatePicker('new-task-due','Due Date','task')" />
-        <button type="button" onclick="openDatePicker('new-task-due','Due Date','task')"
-          style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">📅</button>
+        <input type="text" id="new-task-due" placeholder="Select due date" readonly style="flex:1;cursor:pointer;" onclick="openDatePicker('new-task-due','Due Date','task')" />
+        <button type="button" onclick="openDatePicker('new-task-due','Due Date','task')" style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">📅</button>
       </div>
     </div>
     <div class="form-group">
       <label>Due Time <span style="color:#aaa;font-size:0.8rem;">(optional)</span></label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="new-task-time" placeholder="Select time" readonly
-          style="flex:1;cursor:pointer;" onclick="openTimePicker('new-task-time','task')" />
-        <button type="button" onclick="openTimePicker('new-task-time','task')"
-          style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">🕐</button>
+        <input type="text" id="new-task-time" placeholder="Select time" readonly style="flex:1;cursor:pointer;" onclick="openTimePicker('new-task-time','task')" />
+        <button type="button" onclick="openTimePicker('new-task-time','task')" style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">🕐</button>
       </div>
     </div>
     <button class="btn-primary" onclick="saveTask()">Add Task</button>
@@ -337,21 +322,21 @@ function editSelectedTask() {
       <label>Subject</label>
       <select id="edit-task-subject-sel" style="width:100%;padding:10px;border:2px solid #e8edf2;border-radius:8px;font-size:0.9rem;">
         <option value="">Select subject</option>
-        ${subjectOptions.map(s => `<option value="${s}" ${s === task.subject ? 'selected' : ''}>${s}</option>`).join('')}
-        ${!subjectOptions.includes(task.subject) && task.subject ? `<option value="${task.subject}" selected>${task.subject}</option>` : ''}
+        ${subjectOptions.map(s => `<option value="${escapeHtml(s)}" ${s === task.subject ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('')}
+        ${!subjectOptions.includes(task.subject) && task.subject ? `<option value="${escapeHtml(task.subject)}" selected>${escapeHtml(task.subject)}</option>` : ''}
       </select>
     </div>
     <div class="form-group">
       <label>Due Date</label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="edit-task-due" value="${task.dueRaw || ''}" placeholder="Select due date" readonly style="flex:1;cursor:pointer;" onclick="openDatePicker('edit-task-due','Due Date','edit-task')" />
+        <input type="text" id="edit-task-due" value="${escapeHtml(task.dueRaw || '')}" placeholder="Select due date" readonly style="flex:1;cursor:pointer;" onclick="openDatePicker('edit-task-due','Due Date','edit-task')" />
         <button type="button" onclick="openDatePicker('edit-task-due','Due Date','edit-task')" style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">📅</button>
       </div>
     </div>
     <div class="form-group">
       <label>Due Time <span style="color:#aaa;font-size:0.8rem;">(optional)</span></label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="edit-task-time" value="${timeDisplay}" placeholder="Select time" readonly style="flex:1;cursor:pointer;" onclick="openTimePicker('edit-task-time','edit-task')" />
+        <input type="text" id="edit-task-time" value="${escapeHtml(timeDisplay)}" placeholder="Select time" readonly style="flex:1;cursor:pointer;" onclick="openTimePicker('edit-task-time','edit-task')" />
         <button type="button" onclick="openTimePicker('edit-task-time','edit-task')" style="background:var(--blue);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;">🕐</button>
       </div>
     </div>
@@ -431,7 +416,7 @@ function removeSelectedTask() {
     <div class="form-group">
       <label>Select Task to Remove</label>
       <select id="remove-task-select" style="width:100%;padding:10px;border:2px solid #e8edf2;border-radius:8px;font-size:0.9rem;">
-        ${state.tasks.map(t => `<option value="${t.id}">${t.name} (${t.status})</option>`).join('')}
+        ${state.tasks.map(t => `<option value="${t.id}">${escapeHtml(t.name)} (${escapeHtml(t.status)})</option>`).join('')}
       </select>
     </div>
     <button class="btn-primary" style="background:var(--danger);" onclick="confirmRemoveTask()">Remove Task</button>

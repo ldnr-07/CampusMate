@@ -24,7 +24,11 @@
   #page-profile.app-page.active { padding: 0; }
   #page-quiz.app-page { padding: 0; }
   .classes-grid { grid-template-columns: 1fr 1fr; }
-  .calendar-toolbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .calendar-toolbar { flex-direction: column; gap: 12px; align-items: center; }
+  .cal-nav { justify-content: center; width: 100%; }
+  .cal-controls { justify-content: center; width: 100%; }
+  .view-toggle { width: 100%; justify-content: center; }
+  .view-btn { flex: 1; text-align: center; }
   .quiz-options { flex-direction: column; }
   .quiz-opt { width: 100%; }
   .page-card-header { flex-direction: column; gap: 12px; align-items: flex-start; }
@@ -44,4 +48,26 @@
   .auth-left { padding: 28px 20px; }
   .form-row { flex-direction: column; }
   .tab-bar { flex-direction: column; }
+}
+
+/* Year view responsive */
+@media (max-width: 768px) {
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 4px;
+  }
+  .year-month {
+    min-height: auto;
+    padding: 8px;
+    border-radius: 8px;
+  }
 }

@@ -6,6 +6,7 @@
 <title>CampusMate — Your Academic Companion</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/auth.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config/supabaseClient.js"></script>
 <style>
@@ -21,7 +22,7 @@
     --amber: #F0A830;
     --amber-light: #FEF0D0;
     --green: #2DB87A;
-    --white: #FFFFFF;
+    --white: #FFFFlFF;
     --off-white: #F7F9FC;
     --text-dark: #0A1628;
     --text-mid: #3D5170;
@@ -419,7 +420,7 @@
 <!-- NAV -->
 <nav id="navbar">
   <a class="nav-brand" href="#">
-    <div class="nav-logo">🎓</div>
+    <div class="nav-logo"><img src="image/Logo.png" alt="CampusMate Logo" style="width:24px;height:24px;object-fit:contain;border-radius:6px;"></div>
     CampusMate
   </a>
   <ul class="nav-links">
@@ -428,8 +429,8 @@
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-cta">
-    <a class="btn-ghost" href="logSign.html">Log In</a>
-    <a class="btn-solid" href="logSign.html">Get Started Free →</a>
+    <a class="btn-ghost" href="login.html">Log In</a>
+    <a class="btn-solid" href="login.html">Get Started Free →</a>
   </div>
 </nav>
 
@@ -450,7 +451,7 @@
       and generate AI-powered quizzes — all in one beautiful, distraction-free space.
     </p>
     <div class="hero-actions">
-      <a class="btn-hero btn-hero-primary" href="logSign.html">🚀 Start for Free</a>
+      <a class="btn-hero btn-hero-primary" href="login.html">🚀 Start for Free</a>
       <a class="btn-hero btn-hero-secondary" href="#features">▶ Watch Demo</a>
     </div>
   </div>
@@ -479,7 +480,7 @@
     <!-- App mockup -->
     <div class="app-mockup">
       <div class="mockup-topbar">
-        <div style="font-size:14px">🎓</div>
+        
         <div class="mockup-brand">CampusMate</div>
         <div class="mockup-dots">
           <div class="mockup-dot"></div>
@@ -635,7 +636,7 @@
   <h2 class="cta-title">Ready to take control<br>of your academics?</h2>
   <p class="cta-sub">Join thousands of students who are already studying smarter with CampusMate. It's free to start.</p>
   <div class="cta-actions">
-    <a class="btn-hero btn-hero-primary" href="logSign.html">🚀 Create Free Account</a>
+    <a class="btn-hero btn-hero-primary" href="login.html">🚀 Create Free Account</a>
     <a class="btn-hero btn-hero-secondary" href="#features">Learn More →</a>
   </div>
 </section>
@@ -645,7 +646,7 @@
   <div class="footer-top">
     <div>
       <div class="footer-brand">
-        <div class="footer-brand-icon">🎓</div>
+        <div class="footer-brand-icon"><img src="image/Logo.png" alt="CampusMate Logo" style="width:18px;height:18px;object-fit:contain;border-radius:4px;"></div>
         CampusMate
       </div>
       <div class="footer-tagline">Your all-in-one academic companion. Organize tasks, track exams, and study smarter with AI — built for Filipino students.</div>
@@ -719,7 +720,7 @@
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        window.location.href = '../index.html';
+        window.location.href = 'dashboard.html';
       }
     } catch (error) {
       console.warn('Auth check failed:', error);

@@ -1,36 +1,54 @@
-const CACHE_NAME = 'campusmate-v3';
+const CACHE_NAME = 'campusmate-v4';
 
+// All paths are relative to the Vercel-served root.
+// The Vercel wildcard route maps /anything -> /src/anything,
+// so browser requests for assets inside /src/ arrive at the
+// origin as /src/css/…, /src/js/…, etc.
 const STATIC_ASSETS = [
-  '/index.html',
-  '/css/main.css',
-  '/css/variables.css',
-  '/css/auth.css',
-  '/css/layout.css',
-  '/css/dashboard.css',
-  '/css/classes.css',
-  '/css/calendar.css',
-  '/css/shared.css',
-  '/css/tasks.css',
-  '/css/exams.css',
-  '/css/quiz.css',
-  '/css/profile.css',
-  '/css/responsive.css',
-  '/js/config.js',
-  '/js/icons.js',
-  '/js/utils.js',
-  '/js/ui.js',
-  '/js/navigation.js',
-  '/js/auth.js',
-  '/js/dashboard.js',
-  '/js/calendar.js',
-  '/js/tasks.js',
-  '/js/exams.js',
-  '/js/classes.js',
-  '/js/quiz.js',
-  '/js/profile.js',
-  '/config/supabaseClient.js',
-  '/manifest.json',
-  '/image/Logo.png',
+  '/',
+  '/src/landing-page.html',
+  '/src/login.html',
+  '/src/signup.html',
+  '/src/dashboard.html',
+  '/src/calendar.html',
+  '/src/tasks.html',
+  '/src/classes.html',
+  '/src/exams.html',
+  '/src/quiz.html',
+  '/src/profile.html',
+  '/src/forgot-password.html',
+  '/src/css/main.css',
+  '/src/css/variables.css',
+  '/src/css/auth.css',
+  '/src/css/layout.css',
+  '/src/css/dashboard.css',
+  '/src/css/classes.css',
+  '/src/css/calendar.css',
+  '/src/css/shared.css',
+  '/src/css/tasks.css',
+  '/src/css/exams.css',
+  '/src/css/quiz.css',
+  '/src/css/profile.css',
+  '/src/css/responsive.css',
+  '/src/css/landing.css',
+  '/src/css/polish.css',
+  '/src/css/terms.css',
+  '/src/js/config.js',
+  '/src/js/icons.js',
+  '/src/js/utils.js',
+  '/src/js/ui.js',
+  '/src/js/navigation.js',
+  '/src/js/auth.js',
+  '/src/js/dashboard.js',
+  '/src/js/calendar.js',
+  '/src/js/tasks.js',
+  '/src/js/exams.js',
+  '/src/js/classes.js',
+  '/src/js/quiz.js',
+  '/src/js/profile.js',
+  '/src/config/supabaseClient.js',
+  '/src/manifest.json',
+  '/src/image/Logo.png',
 ];
 
 self.addEventListener('install', event => {
@@ -52,7 +70,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Never cache Supabase API calls — always network
+  // Never cache Supabase API or auth calls — always go to network
   if (url.hostname.includes('supabase.co')) {
     event.respondWith(fetch(event.request));
     return;
@@ -68,8 +86,9 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         return response;
       }).catch(() => {
+        // Offline fallback: return cached root for navigation requests
         if (event.request.destination === 'document') {
-          return caches.match('/index.html');
+          return caches.match('/');
         }
       });
     })

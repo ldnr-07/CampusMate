@@ -1,30 +1,24 @@
-// ===== EMAILJS CONFIG =====
-// Sign up at https://www.emailjs.com/ and configure these values:
-const EMAILJS_CONFIG = {
-  PUBLIC_KEY: 'YOUR_PUBLIC_KEY',      // Replace with your EmailJS public key
-  SERVICE_ID: 'YOUR_SERVICE_ID',      // Replace with your EmailJS service ID (e.g., 'gmail')
-  TEMPLATE_ID: 'YOUR_TEMPLATE_ID'     // Replace with your EmailJS template ID
-};
-
 // ===== GOOGLE SIGN-IN CONFIG =====
 // Get your Client ID from https://console.cloud.google.com/apis/credentials
-// Create OAuth 2.0 credentials and add your domain to Authorized JavaScript origins
 const GOOGLE_CONFIG = {
-  CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID',  // Replace with your Google OAuth 2.0 Client ID
+  CLIENT_ID: '283956397633-dgaa5e8qniiujssqv40uonrsf4d8fec3.apps.googleusercontent.com',
 };
 
-// Store current Google user info
 let googleUser = null;
 
-// Temporary OTP storage (in-memory only)
+// OTP storage — includes 10-min expiry and brute-force lockout
 let currentOTP = null;
 let otpTargetEmail = null;
+let otpExpiry = null;
+let otpAttempts = 0;
+const OTP_MAX_ATTEMPTS = 5;
+const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 // ===== STATE =====
 const state = {
   currentPage: 'page-login',
-  calView: 'month',
-  calDate: new Date(2026, 3, 1), // April 2026
+  calView: 'day',
+  calDate: new Date(),          // Always opens on the current month
   taskTab: 'current',
   examTab: 'incoming',
   activitiesOpen: true,
@@ -43,5 +37,10 @@ const state = {
     avatarUrl: '',
     createdAt: '',
     updatedAt: '',
+    school: '',
+    course: '',
+    yearLevel: '',
+    semester: '',
+    academicYear: '',
   },
 };
