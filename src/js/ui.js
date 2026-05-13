@@ -125,12 +125,12 @@ async function showSettings(prefillAcad) {
             <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);">School / University</label>
             <input id="acad-school" type="text" value="${escapeHtml(acad.school||'')}" placeholder="e.g. University of the Philippines" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);" />
           </div>
-          <div style="display:flex;gap:10px;">
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+          <div class="settings-date-row" style="display:flex;gap:10px;">
+            <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
               <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);">Course / Program</label>
               <input id="acad-course" type="text" value="${escapeHtml(acad.course||'')}" placeholder="e.g. BSCS" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);width:100%;box-sizing:border-box;" />
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
               <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);">Year Level</label>
               <select id="acad-year" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);">
                 <option value="">Select...</option>
@@ -138,15 +138,15 @@ async function showSettings(prefillAcad) {
               </select>
             </div>
           </div>
-          <div style="display:flex;gap:10px;">
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+          <div class="settings-date-row" style="display:flex;gap:10px;">
+            <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
               <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);">Semester</label>
               <select id="acad-semester" onchange="onSemesterFilterChange()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);">
                 <option value="">Select...</option>
                 ${['1st Semester','2nd Semester','Summer','Midyear'].map(s=>`<option value="${s}" ${acad.semester===s?'selected':''}>${s}</option>`).join('')}
               </select>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
               <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);">Academic Year</label>
               <input id="acad-year-input" type="text" value="${escapeHtml(acad.academic_year||'')}" placeholder="e.g. 2025–2026" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.88rem;background:var(--bg-input);color:var(--text-primary);width:100%;box-sizing:border-box;" />
             </div>
@@ -156,15 +156,15 @@ async function showSettings(prefillAcad) {
 
             <div id="sem-block-1" style="background:var(--bg-input);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
               <div style="font-size:0.78rem;font-weight:700;color:var(--blue);">1st Semester</div>
-              <div style="display:flex;gap:10px;">
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+              <div class="settings-date-row" style="display:flex;gap:10px;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">Start Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="sem1-start-dp" value="${acad.sem1_start||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('sem1-start-dp','1st Sem Start','settings')" />
                     <button type="button" onclick="openDatePicker('sem1-start-dp','1st Sem Start','settings')" style="background:var(--blue);color:white;border:none;padding:7px 10px;border-radius:8px;cursor:pointer;flex-shrink:0;">📅</button>
                   </div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">End Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="sem1-end-dp" value="${acad.sem1_end||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('sem1-end-dp','1st Sem End','settings')" />
@@ -176,15 +176,15 @@ async function showSettings(prefillAcad) {
 
             <div id="sem-block-2" style="background:var(--bg-input);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
               <div style="font-size:0.78rem;font-weight:700;color:var(--blue);">2nd Semester</div>
-              <div style="display:flex;gap:10px;">
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+              <div class="settings-date-row" style="display:flex;gap:10px;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">Start Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="sem2-start-dp" value="${acad.sem2_start||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('sem2-start-dp','2nd Sem Start','settings')" />
                     <button type="button" onclick="openDatePicker('sem2-start-dp','2nd Sem Start','settings')" style="background:var(--blue);color:white;border:none;padding:7px 10px;border-radius:8px;cursor:pointer;flex-shrink:0;">📅</button>
                   </div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">End Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="sem2-end-dp" value="${acad.sem2_end||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('sem2-end-dp','2nd Sem End','settings')" />
@@ -196,15 +196,15 @@ async function showSettings(prefillAcad) {
 
             <div id="sem-block-mid" style="background:var(--bg-input);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
               <div style="font-size:0.78rem;font-weight:700;color:#38a169;">Midyear / Summer</div>
-              <div style="display:flex;gap:10px;">
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+              <div class="settings-date-row" style="display:flex;gap:10px;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">Start Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="midyear-start-dp" value="${acad.midyear_start||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('midyear-start-dp','Midyear Start','settings')" />
                     <button type="button" onclick="openDatePicker('midyear-start-dp','Midyear Start','settings')" style="background:#38a169;color:white;border:none;padding:7px 10px;border-radius:8px;cursor:pointer;flex-shrink:0;">📅</button>
                   </div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <div class="settings-date-col" style="display:flex;flex-direction:column;gap:4px;flex:1;">
                   <label style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">End Date</label>
                   <div style="display:flex;gap:6px;align-items:center;">
                     <input type="text" id="midyear-end-dp" value="${acad.midyear_end||''}" placeholder="Select date" readonly style="flex:1;cursor:pointer;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;background:var(--bg-card);color:var(--text-primary);" onclick="openDatePicker('midyear-end-dp','Midyear End','settings')" />

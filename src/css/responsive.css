@@ -40,6 +40,11 @@
   .profile-card { padding: 24px; border-radius: 0; box-shadow: none; }
 }
 
+@media (max-width: 540px) {
+  .settings-date-row { flex-wrap: wrap !important; }
+  .settings-date-col { min-width: 100% !important; }
+}
+
 @media (max-width: 480px) {
   .classes-grid { grid-template-columns: 1fr; }
   .classes-filters { width: 100%; }
