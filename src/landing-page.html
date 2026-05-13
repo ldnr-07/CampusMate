@@ -6,8 +6,9 @@
 <title>CampusMate — Your Academic Companion</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/auth.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="apple-touch-icon" href="/image/Icon.png" />
+<link rel="icon" href="/image/Icon.png" />
 <script src="config/supabaseClient.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -377,6 +378,15 @@
     .how-inner { grid-template-columns: 1fr; }
     .footer-top { grid-template-columns: 1fr 1fr; }
     .features, .how, .cta-section { padding: 60px 24px; }
+  }
+
+  @media (max-width: 540px) {
+    .nav-brand { font-size: 15px; gap: 7px; }
+    .nav-logo { width: 28px; height: 28px; }
+    .nav-logo img { width: 18px; height: 18px; }
+    .btn-ghost { padding: 6px 10px; font-size: 12px; }
+    .btn-solid { padding: 6px 10px; font-size: 12px; }
+    .nav-cta { gap: 6px; }
   }
 
 /* Terms Modal Styles */
