@@ -20,7 +20,9 @@ async function doLogin() {
   if (error) { showToast(error.message); return; }
 
   try { showToast('Welcome back!'); } catch (_) {}
-  window.location.href = 'dashboard.html';
+  const params = new URLSearchParams(window.location.search);
+  const returnTo = params.get('returnTo');
+  window.location.href = returnTo ? decodeURIComponent(returnTo) : 'dashboard.html';
 }
 
 async function validateSignup() {
